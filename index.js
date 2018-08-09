@@ -19,6 +19,7 @@ const httpServer = http.createServer(function(req, res) {
 
 	const decoder = new StringDecoder('utf-8');
 	let buffer = '';
+
 	req.on('data', function (data) {
 		buffer += decoder.write(data);
 	});
@@ -26,26 +27,25 @@ const httpServer = http.createServer(function(req, res) {
 	req.on('end', function () {
 		buffer += decoder.end();
 		// select a handler for each route. if route is not defined, fire notFound handler
-		var selectedHandler = typeof(router[trimmedPath]) !== 'undefined' && method === 'post' ? router[trimmedPath] : handlers.notFound;
+		const selectedHandler = typeof(router[trimmedPath]) !== 'undefined' && method === 'post' ? router[trimmedPath] : handlers.notFound;
 		// execute selectHandler
 		selectedHandler(function(statusCode, data) {
 			// validate statusCode type
 			statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
 			// validate data type
 			data = typeof(data) === 'object' ? data : {};
-			console.log('data: ', data);
+
 			// stringify data
-			var dataStr = JSON.stringify(data)
+			const dataStr = JSON.stringify(data)
 			res.setHeader('Content-type', 'application/json');
 			res.writeHead(statusCode);
 			res.end(dataStr);
 		});
 	});
-
 });
 
 // define handlers container
-var handlers = {};
+const handlers = {};
 
 // hello handler
 handlers.hello = function(callback) {
@@ -58,7 +58,7 @@ handlers.notFound = function(callback) {
 };
 
 // create router object. define hellp route
-var router = {
+const router = {
 	'hello': handlers.hello
 };
 
